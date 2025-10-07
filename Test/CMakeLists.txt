@@ -3,10 +3,10 @@
 message(STATUS "Building Test project...")
 
 add_executable(Test
-    entry.c
+    main.c
 )
 
-add_compile_definitions(USE_OWN_MAIN=0)
+add_compile_definitions(USE_OWN_MAIN=1) # This project define its own main
 
 target_link_libraries(Test PRIVATE RaytracerCore)
 
