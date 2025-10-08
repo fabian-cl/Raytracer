@@ -1,3 +1,11 @@
+#pragma once
+// double vector 3 header file
+
+#include "../detail/vec3_types.h"
+#include "../detail/vec2_types.h"
+#include "../detail/vec_define.h"
+
+#include <math.h>
 
 // CONSTRUCTION
 static inline vec3 vec3_zero(void) { return (vec3) { 0 }; }

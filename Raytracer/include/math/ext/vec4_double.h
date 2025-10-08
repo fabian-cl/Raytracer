@@ -1,3 +1,13 @@
+// double vector 4 header file
+#pragma once
+
+#include <math.h>
+
+#include "../detail/vec2_types.h"
+#include "../detail/vec3_types.h"
+#include "../detail/vec4_types.h"
+#include "../detail/vec_define.h"
+
 /*===========================================================
  * vec4 Constructors
  *===========================================================*/

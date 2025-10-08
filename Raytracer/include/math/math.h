@@ -1,5 +1,10 @@
 #pragma once
 
+// Master include
+
+#ifndef RT_MATHLIB_H
+#define RT_MATHLIB_H
+
 #include "vector.h"
 #include "mat4.h"
 
@@ -49,3 +54,5 @@ static inline void look_at(
 	mat4_set(m, 3, 1, from->y);
 	mat4_set(m, 3, 2, from->z);
 }*/
+
+#endif

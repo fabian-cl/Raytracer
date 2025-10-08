@@ -1,17 +1,9 @@
-#ifndef DETAILS_MATH_VEC_DEFINITIONS_H
-#define DETAILS_MATH_VEC_DEFINITIONS_H
+#ifndef RT_MATHLIB_DETAILS_DEFINITIONS_VEC_H
+#define RT_MATHLIB_DETAILS_DEFINITIONS_VEC_H
 
-// Macro define header
+// HELPER MACROS, DEFINES, etc
 
-#define DEFINE_VEC3_TYPE(NAME, TYPE)    \
-    typedef struct {                    \
-        union {                         \
-            struct {TYPE x, y, z;};     \
-            struct {TYPE r, g, b;};     \
-            struct {TYPE s, t, p;};     \
-        }                               \
-    } NAME; 
-
+// DEFINITION
 
 // VECTOR 2 LITERAL
 
@@ -73,4 +65,15 @@
 #define IVEC4_LITERAL(x, y, z, w) (ivec4){ x, y, z, w }
 #endif
 
-#endif // DETAILS_MATH_VEC_DEFINITIONS_H
+// HELPER MACRO DEFINITION
+
+#define DEFINE_VEC3_TYPE(NAME, TYPE)    \
+    typedef struct {                    \
+        union {                         \
+            struct {TYPE x, y, z;};     \
+            struct {TYPE r, g, b;};     \
+            struct {TYPE s, t, p;};     \
+        }                               \
+    } NAME;
+
+#endif // RT_MATHLIB_DETAILS_DEFINITIONS_VEC_H

@@ -1,4 +1,61 @@
+#pragma once
 
+// double vector 2 header file
+#ifndef RT_MATHLIB_VEC2_DOUBLE_H
+#define RT_MATHLIB_VEC2_DOUBLE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "../detail/vec2_types.h"
+#include "../detail/vec_define.h"
+
+// DECLARATION
+/*===========================================================
+ *  vec2 Constructors
+ *===========================================================*/
+static inline vec2 vec2_zero(void);
+static inline vec2 vec2_one(void);
+static inline vec2 vec2_construct(double x, double y);
+static inline vec2 vec2_construct_uniform(double v);
+
+/*
+ *  COPY
+ */
+static inline void vec2_copy(vec2* out, const vec2* src);
+static inline vec2 vec2_clone(const vec2* src);
+
+/*===========================================================
+ *  vec2 Getters / Setters
+ *===========================================================*/
+static inline double vec2_get_x(const vec2* v);
+static inline double vec2_get_y(const vec2* v);
+static inline void   vec2_set_x(vec2* v, double x);
+static inline void   vec2_set_y(vec2* v, double y);
+
+/*===========================================================
+ *  vec2 Math
+ *===========================================================*/
+static inline vec2 vec2_add(const vec2* a, const vec2* b);
+static inline void vec2_add_ex(vec2* out, const vec2* a, const vec2* b);
+static inline vec2 vec2_sub(const vec2* a, const vec2* b);
+static inline void vec2_sub_ex(vec2* out, const vec2* a, const vec2* b);
+static inline vec2 vec2_mult(const vec2* v, double s);
+static inline void vec2_mult_ex(vec2* out, const vec2* v, double s);
+static inline vec2 vec2_div(const vec2* v, double s);
+static inline void vec2_div_ex(vec2* out, const vec2* v, double s);
+static inline double vec2_length_squared(const vec2* v);
+static inline double vec2_length(const vec2* v);
+static inline void vec2_normalize(vec2* v);
+static inline void vec2_normalize_ex(vec2* out, const vec2* v);
+static inline double vec2_dot(const vec2* a, const vec2* b);
+static inline double vec2_distance(const vec2* a, const vec2* b);
+static inline vec2 vec2_neg(const vec2* v);
+static inline void vec2_neg_ex(vec2* out, const vec2* v);
+static inline vec2 vec2_hadamard(const vec2* a, const vec2* b);
+
+// IMPLEMENTATION
 /*===========================================================
  *  vec2 Constructors
  *===========================================================*/
@@ -114,3 +171,9 @@ static inline vec2 vec2_hadamard(const vec2* a, const vec2* b)
 {
     return VEC2_LITERAL(a->x * b->x, a->y * b->y);
 }
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif //!RT_MATHLIB_VEC2_DOUBLE_H

@@ -52,9 +52,9 @@ typedef vec4 dir4;
 #define FVEC4_SIZEOF    sizeof(vec4)
 
 // FUNCTION DEFINITION
-#include "ext/vec2.h"
-#include "ext/vec3.h"
-#include "ext/vec4.h"
+#include "ext/vec2_double.h"
+#include "ext/vec3_double.h"
+#include "ext/vec4_double.h"
 
 #ifndef VECTOR_IMPLEMENTATION_H
 #define VECTOR_IMPLEMENTATION_H
