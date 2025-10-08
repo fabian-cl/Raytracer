@@ -15,5 +15,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 message(STATUS "Building projects...")
 
 # Add subdirectories (each one has its own CMakeLists.txt)
-add_subdirectory(RaytracerCore)
-add_subdirectory(TestMath)
+#add_subdirectory(Raytracer)
+add_subdirectory(SimpleScene)
+#add_subdirectory(Tests)

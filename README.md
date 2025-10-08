@@ -1,1 +1,1 @@
-TODO: README.md
+The idea behind this branch is to play around with the structure of how to render a simple triangle.
