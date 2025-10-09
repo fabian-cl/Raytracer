@@ -3,11 +3,6 @@
 #ifndef MATH_VECTOR_H
 #define MATH_VECTOR_H
 
-#ifndef MATH
-#define MATH
-    #include <math.h>
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
