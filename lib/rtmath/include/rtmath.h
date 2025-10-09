@@ -1,9 +1,7 @@
-#pragma once
+#ifndef RT_MATH_H
+#define RT_MATH_H
 
 // Master include
-
-#ifndef RT_MATHLIB_H
-#define RT_MATHLIB_H
 
 #include "vector.h"
 #include "mat4.h"
@@ -55,4 +53,4 @@ static inline void look_at(
 	mat4_set(m, 3, 2, from->z);
 }*/
 
-#endif
+#endif //!RT_MATH_H

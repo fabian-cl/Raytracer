@@ -1,7 +1,7 @@
 #include <core/math/vector.h>
 
 vec3 vec3_refract(const vec3* v, const vec3* n, double eta) {
-    // Snell’s law
+    // Snell's law
     double dotVN = v->x * n->x + v->y * n->y + v->z * n->z;
     double k = 1.0 - eta * eta * (1.0 - dotVN * dotVN);
     if (k < 0.0) {
