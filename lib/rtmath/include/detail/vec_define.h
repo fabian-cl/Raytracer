@@ -1,7 +1,8 @@
-#ifndef RT_MATHLIB_DETAILS_DEFINITIONS_VEC_H
-#define RT_MATHLIB_DETAILS_DEFINITIONS_VEC_H
+#ifndef RTM_DETAILS_VEC_DEFINITION_H
+#define RTM_DETAILS_VEC_DEFINITION_H
 
 #include "../rtmdefine.h"
+#include "common.h"
 
 // HELPER MACROS, DEFINES, etc
 
@@ -78,4 +79,4 @@
         }                               \
     } NAME;
 
-#endif // RT_MATHLIB_DETAILS_DEFINITIONS_VEC_H
+#endif // RTM_DETAILS_VEC_DEFINITION_H

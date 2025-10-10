@@ -1,22 +1,10 @@
 #ifndef RTM_DEFINE_H
 #define RTM_DEFINE_H
 
-#ifndef RTMDEF
-    #if (RTM_USE_STATIC_INLINE)
-        #define RTMDEF static inline
-    #else
-        #define RTMDEF static
-    #endif
-#endif
+#define RTM_VERSION 0.1
 
-#ifndef RTM_bool
-    #define RTM_bool unsigned
-    #define RTM_TRUE 0
-    #define RTM_FALSE 1
-#endif
-
-#ifndef RTM_EPSILON
-    #define RTM_EPSION 1e-9
+#if !defined(RTM_USE_SIMD)
+#pragma message("NO SIMD optimization")
 #endif
 
 #endif

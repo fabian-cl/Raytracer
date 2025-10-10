@@ -1,5 +1,5 @@
-#ifndef RTM_VEC2_DOUBLE_H
-#define RTM_VEC2_DOUBLE_H
+#ifndef RTM_VEC3_DOUBLE_H
+#define RTM_VEC3_DOUBLE_H
 
 #ifdef __cplusplus
 extern "C" {

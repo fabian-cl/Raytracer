@@ -1,13 +1,14 @@
 #ifndef RT_MATH_H
 #define RT_MATH_H
 
+// Master include
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Master include
-
 // TYPE INCLUDES
+#include "rtmdefine.h"
 #include "detail/vec2_types.h"
 #include "detail/vec3_types.h"
 #include "detail/vec4_types.h"
