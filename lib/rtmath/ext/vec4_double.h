@@ -243,6 +243,7 @@ RTMDEF rtm_dvec4 rtm_dvec4_hadamard(const rtm_dvec4* a, const rtm_dvec4* b);
  * @brief Performs element-wise multiplication and stores the result in `out`.
  */
 RTMDEF void rtm_dvec4_hadamard_to(rtm_dvec4* out, const rtm_dvec4* a, const rtm_dvec4* b);
+
 // IMPLEMENTATION
 #ifdef RTM_IMPLEMENTATION
 
@@ -303,7 +304,7 @@ RTMDEF void rtm_dvec4_add_to(rtm_dvec4* out, const rtm_dvec4* a, const rtm_dvec4
     out->x = a->x + b->x; out->y = a->y + b->y; out->z = a->z + b->z; out->w = a->w + b->w;
 }
 
-RTMDEF void rtm_dvec4_add_inplace(rtm_dvec4* a, const rtm_dvec4* b); {
+RTMDEF void rtm_dvec4_add_inplace(rtm_dvec4* a, const rtm_dvec4* b) {
     a->x =+ b->x; 
     a->y =+ b->y; 
     a->z =+ b->z; 
@@ -317,7 +318,7 @@ RTMDEF void rtm_dvec4_sub_to(rtm_dvec4* out, const rtm_dvec4* a, const rtm_dvec4
     out->x = a->x - b->x; out->y = a->y - b->y; out->z = a->z - b->z; out->w = a->w - b->w;
 }
 
-RTMDEF void rtm_dvec4_sub_inplace(rtm_dvec4* out, const rtm_dvec4* a, const rtm_dvec4* b) {
+RTMDEF void rtm_dvec4_sub_inplace(rtm_dvec4* a, const rtm_dvec4* b) {
     a->x =- b->x; 
     a->y =- b->y; 
     a->z =- b->z; 
@@ -331,10 +332,10 @@ RTMDEF void rtm_dvec4_mult_to(rtm_dvec4* out, const rtm_dvec4* v, double s) {
     out->x = v->x * s; out->y = v->y * s; out->z = v->z * s; out->w = v->w * s;
 }
 RTMDEF void rtm_dvec4_mult_inplace(rtm_dvec4* v, double s) {
-    v->x =* s; 
-    v->y =* s; 
-    v->z =* s; 
-    v->w =* s;
+    v->x *= s; 
+    v->y *= s; 
+    v->z *= s; 
+    v->w *= s;
 }
 
 RTMDEF rtm_dvec4 rtm_dvec4_div(const rtm_dvec4* v, double s) {
@@ -345,10 +346,10 @@ RTMDEF void rtm_dvec4_div_to(rtm_dvec4* out, const rtm_dvec4* v, double s) {
 }
 
 RTMDEF void rtm_dvec4_div_inplace(rtm_dvec4* v, double s) {
-    v->x =/ s; 
-    v->y =/ s; 
-    v->z =/ s; 
-    v->w =/ s;
+    v->x /= s; 
+    v->y /= s; 
+    v->z /= s; 
+    v->w /= s;
 }
 
 RTMDEF double rtm_dvec4_length_squared(const rtm_dvec4* v) {
@@ -391,7 +392,7 @@ RTMDEF rtm_dvec4 rtm_dvec4_hadamard(const rtm_dvec4* a, const rtm_dvec4* b) {
     return (rtm_dvec4) { a->x* b->x, a->y* b->y, a->z* b->z, a->w* b->w };
 }
 
-RTMDEF rtm_dvec4 rtm_dvec4_hadamard_to(rtm_dvec4* out, const rtm_dvec4* a, const rtm_dvec4* b) {
+RTMDEF void rtm_dvec4_hadamard_to(rtm_dvec4* out, const rtm_dvec4* a, const rtm_dvec4* b) {
     *out = rtm_dvec4_hadamard(a, b);
 }
 

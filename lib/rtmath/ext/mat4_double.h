@@ -59,7 +59,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_clone(const rtm_dmat4* src);
  *===========================================================*/
 
 RTMDEF double rtm_dmat4_get(const rtm_dmat4* m, int x, int y);
-RTMDEF void rtm_dmat4_set(const rtm_dmat4* m, int x, int y, double new_value);
+RTMDEF void rtm_dmat4_set(rtm_dmat4* m, int x, int y, double new_value);
 
 rtm_dvec4* rtm_dmat4_col(rtm_dmat4* m, int i);
 
@@ -79,7 +79,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_mult_scalar(const rtm_dmat4* a, double s);
 RTMDEF void rtm_dmat4_mult_scalar_to(rtm_dmat4* out, const rtm_dmat4* a, double s);
 RTMDEF void rtm_dmat4_mult_scalar_inplace(rtm_dmat4* a, double s);
 
-RTMDEF rtm_dmat4 rtm_dmat4_div_scalar(rtm_dmat4 a, double s);
+RTMDEF rtm_dmat4 rtm_dmat4_div_scalar(const rtm_dmat4* a, double s);
 RTMDEF void rtm_dmat4_div_scalar_to(rtm_dmat4* out, const rtm_dmat4* a, double s);
 RTMDEF void rtm_dmat4_div_scalar_inplace(rtm_dmat4* a, double s);
 
@@ -105,16 +105,16 @@ RTMDEF void rtm_dmat4_mult_inplace(rtm_dmat4* a, const rtm_dmat4* b);
  * @brief Multiplies a matrix by a 4D vector (result = m * v).
  */
 RTMDEF rtm_dvec4 rtm_dmat4_mult_vec4(const rtm_dmat4* m, const rtm_dvec4* v);
-RTMDEF void rtm_dmat4_mult_vec4_to(rtm_dmat4* out, const rtm_dmat4* m, const rtm_dvec4* v);
-RTMDEF void rtm_dmat4_mult_vec4_inplace(rtm_dmat4* m, const rtm_dvec4* v);
+RTMDEF void rtm_dmat4_mult_vec4_to(rtm_dvec4* out, const rtm_dmat4* m, const rtm_dvec4* v);
+//RTMDEF void rtm_dmat4_mult_vec4_inplace(const rtm_dmat4* m, const rtm_dvec4* v);
 
 
 /**
  * @brief Computes the transpose of a matrix.
  */
 RTMDEF rtm_dmat4 rtm_dmat4_transpose(const rtm_dmat4* m);
-RTMDEF rtm_dmat4 rtm_dmat4_transpose_to(rtm_dmat4* out, const rtm_dmat4* m);
-RTMDEF rtm_dmat4 rtm_dmat4_transpose_inplace(rtm_dmat4* m);
+RTMDEF void rtm_dmat4_transpose_to(rtm_dmat4* out, const rtm_dmat4* m);
+RTMDEF void rtm_dmat4_transpose_inplace(rtm_dmat4* m);
 
 /**
  * @brief Computes the determinant of a 4x4 matrix.
@@ -291,18 +291,11 @@ RTMDEF void rtm_dmat4_identity_to(rtm_dmat4* out) {
 }
 
 RTMDEF rtm_dmat4 rtm_dmat4_zero(void) {
-    return (rtm_dmat4) {0}
+    return (rtm_dmat4) {0};
 }
 
 RTMDEF void rtm_dmat4_zero_to(rtm_dmat4* out) {
     *out = (rtm_dmat4) {0};
-}
-
-RTMDEF void rtm_dmat4_zero(rtm_dmat4* out) {
-    for (int i = 0; i < MAT4_SIZE; i++)
-	{
-		out->values[i] = 0.0;
-	}
 }
 
 RTMDEF rtm_dmat4 rtm_dmat4_construct_cols(const rtm_dvec4* c0, const rtm_dvec4* c1, const rtm_dvec4* c2, const rtm_dvec4* c3)
@@ -312,7 +305,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_construct_cols(const rtm_dvec4* c0, const rtm_dvec4* 
     return m;
 }
 
-RTMDEF rtm_dmat4 rtm_dmat4_construct_cols_to(rtm_dmat4* out, const rtm_dvec4* c0, const rtm_dvec4* c1, const rtm_dvec4* c2, const rtm_dvec4* c3)
+RTMDEF void rtm_dmat4_construct_cols_to(rtm_dmat4* out, const rtm_dvec4* c0, const rtm_dvec4* c1, const rtm_dvec4* c2, const rtm_dvec4* c3)
 {
     out->cols[0] = *c0;
     out->cols[1] = *c1; 
@@ -336,21 +329,21 @@ RTMDEF void rtm_dmat4_construct_diagonal_to(rtm_dmat4* out, double s) {
 }
 
 RTMDEF void rtm_dmat4_copy(rtm_dmat4* out, const rtm_dmat4* src) {
-    memcpy(out->values, src->values, sizeof(src->values));
+    memcpy(out->elem, src->elem, sizeof(*src));
 }
 
 RTMDEF rtm_dmat4 rtm_dmat4_clone(const rtm_dmat4* src) { return *src; }
 
 RTMDEF double rtm_dmat4_get(const rtm_dmat4* m, int x, int y) {
-    return m->values[_rtm_dmat4_index(x, y)];
+    return m->elem[_rtm_dmat4_index(x, y)];
 }
 
-RTMDEF void rtm_dmat4_set(const rtm_dmat4* m, int x, int y, double new_value) {
-    m->values[_rtm_dmat4_index(x, y)] = new_value;
+RTMDEF void rtm_dmat4_set(rtm_dmat4* m, int x, int y, double new_value) {
+    m->elem[_rtm_dmat4_index(x, y)] = new_value;
 }
 
 rtm_dvec4* rtm_dmat4_col(rtm_dmat4* m, int i) {
-    return m->cols[i];
+    return &m->cols[i];
 }
 
 RTMDEF rtm_dmat4 rtm_dmat4_add(const rtm_dmat4* a, const rtm_dmat4* b) {
@@ -360,7 +353,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_add(const rtm_dmat4* a, const rtm_dmat4* b) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			m.elem[j * 4 + i] = a->values[j * 4 + i] + b->values[j * 4 + i];
+			m.elem[j * 4 + i] = a->elem[j * 4 + i] + b->elem[j * 4 + i];
 		}
 	}
 
@@ -372,7 +365,7 @@ RTMDEF void rtm_dmat4_add_to(rtm_dmat4* out, const rtm_dmat4* a, const rtm_dmat4
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			out->elem[j * 4 + i] = a->values[j * 4 + i] + b->values[j * 4 + i];
+			out->elem[j * 4 + i] = a->elem[j * 4 + i] + b->elem[j * 4 + i];
 		}
 	}
 }
@@ -382,7 +375,7 @@ RTMDEF void rtm_dmat4_add_inplace(rtm_dmat4* a, const rtm_dmat4* b) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			a->elem[j * 4 + i] = a->values[j * 4 + i] + b->values[j * 4 + i];
+			a->elem[j * 4 + i] = a->elem[j * 4 + i] + b->elem[j * 4 + i];
 		}
 	}
 }
@@ -394,7 +387,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_sub(const rtm_dmat4* a, const rtm_dmat4* b) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			m.elem[j * 4 + i] = a->values[j * 4 + i] - b->values[j * 4 + i];
+			m.elem[j * 4 + i] = a->elem[j * 4 + i] - b->elem[j * 4 + i];
 		}
 	}
 
@@ -405,7 +398,7 @@ RTMDEF void rtm_dmat4_sub_to(rtm_dmat4* out, const rtm_dmat4* a, const rtm_dmat4
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			out->elem[j * 4 + i] = a->values[j * 4 + i] - b->values[j * 4 + i];
+			out->elem[j * 4 + i] = a->elem[j * 4 + i] - b->elem[j * 4 + i];
 		}
 	}
 }
@@ -415,7 +408,7 @@ RTMDEF void rtm_dmat4_sub_inplace(rtm_dmat4* a, const rtm_dmat4* b) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			a->elem[j * 4 + i] = a->values[j * 4 + i] - b->values[j * 4 + i];
+			a->elem[j * 4 + i] = a->elem[j * 4 + i] - b->elem[j * 4 + i];
 		}
 	}
 }
@@ -427,7 +420,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_mult_scalar(const rtm_dmat4* a, double s) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			m.elem[j * 4 + i] = a->values[j * 4 + i] * s;
+			m.elem[j * 4 + i] = a->elem[j * 4 + i] * s;
 		}
 	}
 
@@ -439,7 +432,7 @@ RTMDEF void rtm_dmat4_mult_scalar_to(rtm_dmat4* out, const rtm_dmat4* a,double s
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			out->elem[j * 4 + i] = a->values[j * 4 + i] * s;
+			out->elem[j * 4 + i] = a->elem[j * 4 + i] * s;
 		}
 	}
 }
@@ -449,7 +442,7 @@ RTMDEF void rtm_dmat4_mult_scalar_inplace(rtm_dmat4* a, double s) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			a->elem[j * 4 + i] = a->values[j * 4 + i] * s;
+			a->elem[j * 4 + i] = a->elem[j * 4 + i] * s;
 		}
 	}
 }
@@ -461,7 +454,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_div_scalar(const rtm_dmat4* a, double s) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			m.elem[j * 4 + i] = a->values[j * 4 + i] / s;
+			m.elem[j * 4 + i] = a->elem[j * 4 + i] / s;
 		}
 	}
 
@@ -473,7 +466,7 @@ RTMDEF void rtm_dmat4_div_scalar_to(rtm_dmat4* out, const rtm_dmat4* a,double s)
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			out->elem[j * 4 + i] = a->values[j * 4 + i] / s;
+			out->elem[j * 4 + i] = a->elem[j * 4 + i] / s;
 		}
 	}
 }
@@ -483,7 +476,7 @@ RTMDEF void rtm_dmat4_div_scalar_inplace(rtm_dmat4* a, double s) {
 	{
 		for (int j = 0; j < MAT4_COLS; j++)
 		{
-			a->elem[j * 4 + i] = a->values[j * 4 + i] / s;
+			a->elem[j * 4 + i] = a->elem[j * 4 + i] / s;
 		}
 	}
 }
@@ -525,14 +518,15 @@ RTMDEF rtm_dvec4 rtm_dmat4_mult_vec4(const rtm_dmat4* m, const rtm_dvec4* v)
     return out;
 }
 
-RTMDEF void rtm_dmat4_mult_vec4_to(rtm_dmat4* out, const rtm_dmat4* m, const rtm_dvec4* v) {
+RTMDEF void rtm_dmat4_mult_vec4_to(rtm_dvec4* out, const rtm_dmat4* m, const rtm_dvec4* v) {
     *out = rtm_dmat4_mult_vec4(m, v);
 }
 
+/*
 RTMDEF void rtm_dmat4_mult_vec4_inplace(rtm_dmat4* m, const rtm_dvec4* v) {
     rtm_dmat4 temp = rtm_dmat4_mult_vec4(m, v);
     *a = temp;
-}
+}*/
 
 RTMDEF rtm_dmat4 rtm_dmat4_transpose(const rtm_dmat4* m) {
     rtm_dmat4 out;
@@ -622,7 +616,7 @@ RTMDEF void rtm_dmat4_inverse_to(rtm_dmat4* out, const rtm_dmat4* m)
     *out = rtm_dmat4_inverse(m);
 }
 
-RTMDEF rtm_dmat4 rtm_dmat4_inverse_inplace(rtm_dmat4* m)
+RTMDEF void rtm_dmat4_inverse_inplace(rtm_dmat4* m)
 {
     rtm_dmat4 temp = rtm_dmat4_inverse(m);
     *m = temp;
@@ -630,9 +624,9 @@ RTMDEF rtm_dmat4 rtm_dmat4_inverse_inplace(rtm_dmat4* m)
 
 RTMDEF rtm_dmat4 rtm_dmat4_translation(const rtm_dvec3* translation) {
     rtm_dmat4 m = {0};
-    m.elem[_rtm_dmat4(0,3)] = translation[0];
-    m.elem[_rtm_dmat4(1,3)] = translation[1];
-    m.elem[_rtm_dmat4(2,3)] = translation[2];
+    m.elem[_rtm_dmat4(0,3)] = translation->elem[0];
+    m.elem[_rtm_dmat4(1,3)] = translation->elem[1];
+    m.elem[_rtm_dmat4(2,3)] = translation->elem[2];
     m.elem[_rtm_dmat4(3,3)] = 1;
 
     return m;
@@ -645,16 +639,16 @@ RTMDEF void rtm_dmat4_translation_to(rtm_dmat4* out, const rtm_dvec3* translatio
 RTMDEF rtm_dmat4 rtm_dmat4_scale(const rtm_dvec3* scale) {
     rtm_dmat4 m = {0};
 
-    m.elem[_rtm_dmat4(0,0)] = translation[0];
-    m.elem[_rtm_dmat4(1,1)] = translation[1];
-    m.elem[_rtm_dmat4(2,2)] = translation[2];
+    m.elem[_rtm_dmat4(0,0)] = scale->elem[0];
+    m.elem[_rtm_dmat4(1,1)] = scale->elem[1];
+    m.elem[_rtm_dmat4(2,2)] = scale->elem[2];
     m.elem[_rtm_dmat4(3,3)] = 1;
 
     return m;
 }
 
 RTMDEF void rtm_dmat4_scale_to(rtm_dmat4* out, const rtm_dvec3* scale) {
-    *out = rtm_dmat4_translation(translation);
+    *out = rtm_dmat4_scale(scale);
 }
 
 RTMDEF rtm_dmat4 rtm_dmat4_rotation_x(double angle)
@@ -719,7 +713,8 @@ RTMDEF rtm_dmat4 rtm_dmat4_rotation_euler(const rtm_dvec3* euler)
     rtm_dmat4 rz = rtm_dmat4_rotation_z(euler->z);
 
     // Combined rotation: R = Rz * Ry * Rx (XYZ order)
-    return rtm_dmat4_mult(&rz, &rtm_dmat4_mult(&ry, &rx));
+    rtm_dmat4 ry_rx = rtm_dmat4_mult(&ry, &rx);
+    return rtm_dmat4_mult(&rz, &ry_rx);
 }
 
 RTMDEF void rtm_dmat4_rotation_euler_to(rtm_dmat4* out, const rtm_dvec3* euler)
@@ -732,12 +727,13 @@ RTMDEF rtm_dmat4 rtm_dmat4_trs(const rtm_dvec3* translation,
     const rtm_dvec3* scale) {
 
     rtm_dmat4 m = rtm_dmat4_identity();
-    
-    rtm_dmat4_translation(m,m, &t->position);
-	rtm_dmat4_rotation_z(m,m, &t->rotation.z);
-	rtm_dmat4_rotation_y(m,m, &t->rotation.y);
-	rtm_dmat4_rotation_x(m,m, &t->rotation.x);
-	rtm_dmat4_scale(m,m, &t->scale);
+    printf("[WARNING] rtm_dmat4_trs(): not implemented yet!");
+
+    /*rtm_dmat4_translation(m,m, translation);
+	rtm_dmat4_rotation_z(m,m, &rotation.z);
+	rtm_dmat4_rotation_y(m,m, &rotation.y);
+	rtm_dmat4_rotation_x(m,m, &rotation.x);
+	rtm_dmat4_scale(m,m, &t->scale);*/
 
     return m;
 }
@@ -747,7 +743,7 @@ RTMDEF void rtm_dmat4_trs_to(rtm_dmat4* out,
     const rtm_dvec3* rotation, 
     const rtm_dvec3* scale) {
 
-    *out = rtm_dmat4_trs(translation, rotation, scale)
+    *out = rtm_dmat4_trs(translation, rotation, scale);
 }
 
 // Decompose TRS (transform)
@@ -769,22 +765,37 @@ RTMDEF rtm_dmat4 rtm_dmat4_look_at(
     return result;
 }
 
-RTMDEF rtm_dmat4 rtm_dmat4_look_at_to(rtm_dmat4* out,
+RTMDEF void rtm_dmat4_look_at_to(rtm_dmat4* out,
     const rtm_dvec3* eye, 
     const rtm_dvec3* target, 
     const rtm_dvec3* up) {
 
-    rtm_dvec3 f = rtm_dvec3_normalize(&(rtm_dvec3_sub(target, eye)));
-    rtm_dvec3 s = rtm_dvec3_normalize(&(rtm_dvec3_cross(&f, up)));
+    rtm_dvec3 f = rtm_dvec3_sub(target, eye);
+    rtm_dvec3_normalize_inplace(&f);
+
+    rtm_dvec3 s = rtm_dvec3_cross(&f, up);
+    rtm_dvec3_normalize_inplace(&s);
     rtm_dvec3 u = rtm_dvec3_cross(&s, &f);
 
-    out->m[0][0] =  s.x; out->m[0][1] =  u.x; out->m[0][2] = -f.x; out->m[0][3] = 0.0;
-    out->m[1][0] =  s.y; out->m[1][1] =  u.y; out->m[1][2] = -f.y; out->m[1][3] = 0.0;
-    out->m[2][0] =  s.z; out->m[2][1] =  u.z; out->m[2][2] = -f.z; out->m[2][3] = 0.0;
-    out->m[3][0] = -rtm_dvec3_dot(&s, eye);
-    out->m[3][1] = -rtm_dvec3_dot(&u, eye);
-    out->m[3][2] =  rtm_dvec3_dot(&f, eye);
-    out->m[3][3] = 1.0;
+    out->elem[_rtm_dmat4_index(0,0)] =  s.x;
+    out->elem[_rtm_dmat4_index(0,1)] =  u.x; 
+    out->elem[_rtm_dmat4_index(0,2)] = -f.x; 
+    out->elem[_rtm_dmat4_index(0,3)] = 0.0;
+
+    out->elem[_rtm_dmat4_index(1,0)] =  s.y;
+    out->elem[_rtm_dmat4_index(1,1)] =  u.y;
+    out->elem[_rtm_dmat4_index(1,2)] = -f.y; 
+    out->elem[_rtm_dmat4_index(1,3)] = 0.0;
+
+    out->elem[_rtm_dmat4_index(2,0)] =  s.z; 
+    out->elem[_rtm_dmat4_index(2,1)] =  u.z; 
+    out->elem[_rtm_dmat4_index(2,2)] = -f.z; 
+    out->elem[_rtm_dmat4_index(2,3)] = 0.0;
+
+    out->elem[_rtm_dmat4_index(3,0)] = -rtm_dvec3_dot(&s, eye);
+    out->elem[_rtm_dmat4_index(3,1)] = -rtm_dvec3_dot(&u, eye);
+    out->elem[_rtm_dmat4_index(3,2)] =  rtm_dvec3_dot(&f, eye);
+    out->elem[_rtm_dmat4_index(3,3)] = 1.0;
 }
 
 /**
@@ -811,25 +822,22 @@ RTMDEF void rtm_dmat4_perspective_to(
     double f = 1.0 / tan(fov_y / 2.0);
     double nf = 1.0 / (near_plane - far_plane);
 
-    out->m[0][0] = f / aspect;
-    out->m[0][1] = 0.0;
-    out->m[0][2] = 0.0;
-    out->m[0][3] = 0.0;
-
-    out->m[1][0] = 0.0;
-    out->m[1][1] = f;
-    out->m[1][2] = 0.0;
-    out->m[1][3] = 0.0;
-
-    out->m[2][0] = 0.0;
-    out->m[2][1] = 0.0;
-    out->m[2][2] = (far_plane + near_plane) * nf;
-    out->m[2][3] = -1.0;
-
-    out->m[3][0] = 0.0;
-    out->m[3][1] = 0.0;
-    out->m[3][2] = (2.0 * far_plane * near_plane) * nf;
-    out->m[3][3] = 0.0;
+    out->elem[_rtm_dmat4_index(0,0)] = f / aspect;
+    out->elem[_rtm_dmat4_index(0,1)] = 0.0;
+    out->elem[_rtm_dmat4_index(0,2)] = 0.0;
+    out->elem[_rtm_dmat4_index(0,3)] = 0.0;
+    out->elem[_rtm_dmat4_index(1,0)] = 0.0;
+    out->elem[_rtm_dmat4_index(1,1)] = f;
+    out->elem[_rtm_dmat4_index(1,2)] = 0.0;
+    out->elem[_rtm_dmat4_index(1,3)] = 0.0;
+    out->elem[_rtm_dmat4_index(2,0)] = 0.0;
+    out->elem[_rtm_dmat4_index(2,1)] = 0.0;
+    out->elem[_rtm_dmat4_index(2,2)] = (far_plane + near_plane) * nf;
+    out->elem[_rtm_dmat4_index(2,3)] = -1.0;
+    out->elem[_rtm_dmat4_index(3,0)] = 0.0;
+    out->elem[_rtm_dmat4_index(3,1)] = 0.0;
+    out->elem[_rtm_dmat4_index(3,2)] = (2.0 * far_plane * near_plane) * nf;
+    out->elem[_rtm_dmat4_index(3,3)] = 0.0;
 }
 
 /**
@@ -855,25 +863,22 @@ RTMDEF void rtm_dmat4_ortho_to(
     double tb = top - bottom;
     double fn = far_plane - near_plane;
 
-    out->m[0][0] = 2.0 / rl;
-    out->m[0][1] = 0.0;
-    out->m[0][2] = 0.0;
-    out->m[0][3] = 0.0;
-
-    out->m[1][0] = 0.0;
-    out->m[1][1] = 2.0 / tb;
-    out->m[1][2] = 0.0;
-    out->m[1][3] = 0.0;
-
-    out->m[2][0] = 0.0;
-    out->m[2][1] = 0.0;
-    out->m[2][2] = -2.0 / fn;
-    out->m[2][3] = 0.0;
-
-    out->m[3][0] = -(right + left) / rl;
-    out->m[3][1] = -(top + bottom) / tb;
-    out->m[3][2] = -(far_plane + near_plane) / fn;
-    out->m[3][3] = 1.0;
+    out->elem[_rtm_dmat4_index(0,0)] = 2.0 / rl;
+    out->elem[_rtm_dmat4_index(0,1)] = 0.0;
+    out->elem[_rtm_dmat4_index(0,2)] = 0.0;
+    out->elem[_rtm_dmat4_index(0,3)] = 0.0;
+    out->elem[_rtm_dmat4_index(1,0)] = 0.0;
+    out->elem[_rtm_dmat4_index(1,1)] = 2.0 / tb;
+    out->elem[_rtm_dmat4_index(1,2)] = 0.0;
+    out->elem[_rtm_dmat4_index(1,3)] = 0.0;
+    out->elem[_rtm_dmat4_index(2,0)] = 0.0;
+    out->elem[_rtm_dmat4_index(2,1)] = 0.0;
+    out->elem[_rtm_dmat4_index(2,2)] = -2.0 / fn;
+    out->elem[_rtm_dmat4_index(2,3)] = 0.0;
+    out->elem[_rtm_dmat4_index(3,0)] = -(right + left) / rl;
+    out->elem[_rtm_dmat4_index(3,1)] = -(top + bottom) / tb;
+    out->elem[_rtm_dmat4_index(3,2)] = -(far_plane + near_plane) / fn;
+    out->elem[_rtm_dmat4_index(3,3)] = 1.0;
 }
 
 #endif

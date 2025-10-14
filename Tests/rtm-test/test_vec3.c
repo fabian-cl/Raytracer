@@ -1,6 +1,7 @@
 #include "../utils.h"
 
 #include <rtmath.h>
+
 /*
 static int test_construction(void) {
     rtm_dvec3 v0 = rtm_dvec3_zero();
@@ -149,7 +150,7 @@ int main () {
     printf("(%f,%f,%f)", v.x, v.y,v.z);
 
     rtm_dvec3_add_inplace(&v, &u);
-    
+
     printf("(%f,%f,%f)", v.x, v.y,v.z);
 
     printf("\nAll rtm_dvec3 tests passed successfully!\n");

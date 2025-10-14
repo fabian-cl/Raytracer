@@ -50,11 +50,11 @@ RTMDEF void rtm_dvec3_sub_inplace(rtm_dvec3* a, const rtm_dvec3* b);
 
 RTMDEF rtm_dvec3 rtm_dvec3_mult(const rtm_dvec3* v, double t);
 RTMDEF void rtm_dvec3_mult_to(rtm_dvec3* out, const rtm_dvec3* v, double t);
-RTMDEF void rtm_dvec3_mult_inplace(rtm_dvec3* out, const rtm_dvec3* v, double t);
+RTMDEF void rtm_dvec3_mult_inplace(rtm_dvec3* v, double t);
 
 RTMDEF rtm_dvec3 rtm_dvec3_div(const rtm_dvec3* v, double t);
 RTMDEF void rtm_dvec3_div_to(rtm_dvec3* out, const rtm_dvec3* v, double t);
-RTMDEF void rtm_dvec3_div_inplace(rtm_dvec3* out, const rtm_dvec3* v, double t);
+RTMDEF void rtm_dvec3_div_inplace(rtm_dvec3* v, double t);
 
 RTMDEF double rtm_dvec3_length_squared(const rtm_dvec3* v);
 RTMDEF double rtm_dvec3_length(const rtm_dvec3* v);
@@ -167,7 +167,7 @@ RTMDEF void rtm_dvec3_sub_to(rtm_dvec3* out, const rtm_dvec3* a, const rtm_dvec3
 	out->z = a->z - b->z;
 }
 
-RTMDEF void rtm_dvec3_sub_inplace(rtm_dvec3* out, const rtm_dvec3* a, const rtm_dvec3* b) {
+RTMDEF void rtm_dvec3_sub_inplace(rtm_dvec3* a, const rtm_dvec3* b) {
 	a->x = a->x - b->x;
 	a->y = a->y - b->y;
 	a->z = a->z - b->z;
@@ -185,7 +185,7 @@ RTMDEF void rtm_dvec3_mult_to(rtm_dvec3* out, const rtm_dvec3* v, double t)
 	out->z = v->z * t;
 }
 
-RTMDEF void rtm_dvec3_mult_inplace(rtm_dvec3* out, const rtm_dvec3* v, double t)
+RTMDEF void rtm_dvec3_mult_inplace(rtm_dvec3* v, double t)
 {
 	v->x = v->x * t;
 	v->y = v->y * t;
@@ -203,7 +203,7 @@ RTMDEF void rtm_dvec3_div_to(rtm_dvec3* out, const rtm_dvec3* v, double t)
 	out->z = v->z / t;
 }
 
-RTMDEF void rtm_dvec3_div_inplace(rtm_dvec3* out, const rtm_dvec3* v, double t)
+RTMDEF void rtm_dvec3_div_inplace(rtm_dvec3* v, double t)
 {
 	v->x = v->x / t;
 	v->y = v->y / t;
