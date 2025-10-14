@@ -61,6 +61,8 @@ typedef union rtm_ivec3 {
 
 } rtm_ivec3;
 
+#define DVEC3_UP (dvec3) {0,1,0};
+
 #ifdef __cplusplus
 }
 #endif

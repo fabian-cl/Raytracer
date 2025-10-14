@@ -52,14 +52,14 @@ RTMDEF void rtm_dmat4_construct_diagonal_to(rtm_dmat4* out , double s);
  *===========================================================*/
 
 RTMDEF void rtm_dmat4_copy(rtm_dmat4* out, const rtm_dmat4* src);
-RTMDEF rtm_dmat4 rtm_dmat4_clone(...);
+RTMDEF rtm_dmat4 rtm_dmat4_clone(const rtm_dmat4* src);
 
 /*===========================================================
  * GETTERS/SETTERS
  *===========================================================*/
 
-RTMDEF double mat4_get(const rtm_dmat4* m, int x, int y);
-RTMDEF double mat4_set(const rtm_dmat4* m, int x, int y, double new_value);
+RTMDEF double rtm_dmat4_get(const rtm_dmat4* m, int x, int y);
+RTMDEF void rtm_dmat4_set(const rtm_dmat4* m, int x, int y, double new_value);
 
 rtm_dvec4* rtm_dmat4_col(rtm_dmat4* m, int i);
 
@@ -174,7 +174,7 @@ RTMDEF void rtm_dmat4_rotation_z_to(rtm_dmat4* out, double angle_radians);
  * @param euler 3D vector containing angles in radians.
  */
 RTMDEF rtm_dmat4 rtm_dmat4_rotation_euler(const rtm_dvec3* euler);
-RTMDEF void rtm_dmat4_rotation_x_to(rtm_dmat4* out, const rtm_dvec3* euler);
+RTMDEF void rtm_dmat4_rotation_euler_to(rtm_dmat4* out, const rtm_dvec3* euler);
 
 //RTMDEF rtm_dmat4 rtm_dmat4_rotation_axis(const rtm_dvec3* axis, double radians);
 
@@ -252,6 +252,11 @@ RTMDEF void rtm_dmat4_ortho_to(rtm_dmat4* out,
 	double bottom, double top,
 	double near_plane, double far_plane);
 
+/* *
+ *  The math matches OpenGL’s right-handed coordinate convention.
+ *  The look-at matrix builds a camera transform where +Z faces backward.
+ *  You can flip the Z terms if you need DirectX-style (left-handed) space.
+ * */
 // IMPLEMENTATION
 #ifdef RTM_IMPLEMENTATION
 
@@ -261,6 +266,9 @@ RTMDEF void rtm_dmat4_ortho_to(rtm_dmat4* out,
 #endif
 
 #include <string.h>  // for memcpy
+
+#include "vec3_double.h"
+#include "vec4_double.h"
 
 RTMDEF int _rtm_dmat4_index(int i, int j) {
 	return j * MAT4_SIZE + i;
@@ -286,6 +294,10 @@ RTMDEF rtm_dmat4 rtm_dmat4_zero(void) {
     return (rtm_dmat4) {0}
 }
 
+RTMDEF void rtm_dmat4_zero_to(rtm_dmat4* out) {
+    *out = (rtm_dmat4) {0};
+}
+
 RTMDEF void rtm_dmat4_zero(rtm_dmat4* out) {
     for (int i = 0; i < MAT4_SIZE; i++)
 	{
@@ -300,7 +312,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_construct_cols(const rtm_dvec4* c0, const rtm_dvec4* 
     return m;
 }
 
-RTMDEF rtm_dmat4 rtm_dmat4_construct_cols(const rtm_dvec4* c0, const rtm_dvec4* c1, const rtm_dvec4* c2, const rtm_dvec4* c3)
+RTMDEF rtm_dmat4 rtm_dmat4_construct_cols_to(rtm_dmat4* out, const rtm_dvec4* c0, const rtm_dvec4* c1, const rtm_dvec4* c2, const rtm_dvec4* c3)
 {
     out->cols[0] = *c0;
     out->cols[1] = *c1; 
@@ -329,11 +341,11 @@ RTMDEF void rtm_dmat4_copy(rtm_dmat4* out, const rtm_dmat4* src) {
 
 RTMDEF rtm_dmat4 rtm_dmat4_clone(const rtm_dmat4* src) { return *src; }
 
-RTMDEF double mat4_get(const rtm_dmat4* m, int x, int y) {
+RTMDEF double rtm_dmat4_get(const rtm_dmat4* m, int x, int y) {
     return m->values[_rtm_dmat4_index(x, y)];
 }
 
-RTMDEF double mat4_set(const rtm_dmat4* m, int x, int y, double new_value) {
+RTMDEF void rtm_dmat4_set(const rtm_dmat4* m, int x, int y, double new_value) {
     m->values[_rtm_dmat4_index(x, y)] = new_value;
 }
 
@@ -747,6 +759,122 @@ RTMDEF void rtm_dmat4_decompose_trs(const rtm_dmat4* m,
     //TODO
 }
 
+RTMDEF rtm_dmat4 rtm_dmat4_look_at(
+    const rtm_dvec3* eye, 
+    const rtm_dvec3* target, 
+    const rtm_dvec3* up) {
+
+    rtm_dmat4 result;
+    rtm_dmat4_look_at_to(&result, eye, target, up);
+    return result;
+}
+
+RTMDEF rtm_dmat4 rtm_dmat4_look_at_to(rtm_dmat4* out,
+    const rtm_dvec3* eye, 
+    const rtm_dvec3* target, 
+    const rtm_dvec3* up) {
+
+    rtm_dvec3 f = rtm_dvec3_normalize(&(rtm_dvec3_sub(target, eye)));
+    rtm_dvec3 s = rtm_dvec3_normalize(&(rtm_dvec3_cross(&f, up)));
+    rtm_dvec3 u = rtm_dvec3_cross(&s, &f);
+
+    out->m[0][0] =  s.x; out->m[0][1] =  u.x; out->m[0][2] = -f.x; out->m[0][3] = 0.0;
+    out->m[1][0] =  s.y; out->m[1][1] =  u.y; out->m[1][2] = -f.y; out->m[1][3] = 0.0;
+    out->m[2][0] =  s.z; out->m[2][1] =  u.z; out->m[2][2] = -f.z; out->m[2][3] = 0.0;
+    out->m[3][0] = -rtm_dvec3_dot(&s, eye);
+    out->m[3][1] = -rtm_dvec3_dot(&u, eye);
+    out->m[3][2] =  rtm_dvec3_dot(&f, eye);
+    out->m[3][3] = 1.0;
+}
+
+/**
+ * @brief Creates a perspective projection matrix.
+ */
+RTMDEF rtm_dmat4 rtm_dmat4_perspective(
+    double fov_y,
+    double aspect,
+    double near_plane,
+    double far_plane)
+{
+    rtm_dmat4 result;
+    rtm_dmat4_perspective_to(&result, fov_y, aspect, near_plane, far_plane);
+    return result;
+}
+
+RTMDEF void rtm_dmat4_perspective_to(
+    rtm_dmat4* out,
+    double fov_y,
+    double aspect,
+    double near_plane,
+    double far_plane)
+{
+    double f = 1.0 / tan(fov_y / 2.0);
+    double nf = 1.0 / (near_plane - far_plane);
+
+    out->m[0][0] = f / aspect;
+    out->m[0][1] = 0.0;
+    out->m[0][2] = 0.0;
+    out->m[0][3] = 0.0;
+
+    out->m[1][0] = 0.0;
+    out->m[1][1] = f;
+    out->m[1][2] = 0.0;
+    out->m[1][3] = 0.0;
+
+    out->m[2][0] = 0.0;
+    out->m[2][1] = 0.0;
+    out->m[2][2] = (far_plane + near_plane) * nf;
+    out->m[2][3] = -1.0;
+
+    out->m[3][0] = 0.0;
+    out->m[3][1] = 0.0;
+    out->m[3][2] = (2.0 * far_plane * near_plane) * nf;
+    out->m[3][3] = 0.0;
+}
+
+/**
+ * @brief Creates an orthographic projection matrix.
+ */
+RTMDEF rtm_dmat4 rtm_dmat4_ortho(
+    double left, double right,
+    double bottom, double top,
+    double near_plane, double far_plane)
+{
+    rtm_dmat4 result;
+    rtm_dmat4_ortho_to(&result, left, right, bottom, top, near_plane, far_plane);
+    return result;
+}
+
+RTMDEF void rtm_dmat4_ortho_to(
+    rtm_dmat4* out,
+    double left, double right,
+    double bottom, double top,
+    double near_plane, double far_plane)
+{
+    double rl = right - left;
+    double tb = top - bottom;
+    double fn = far_plane - near_plane;
+
+    out->m[0][0] = 2.0 / rl;
+    out->m[0][1] = 0.0;
+    out->m[0][2] = 0.0;
+    out->m[0][3] = 0.0;
+
+    out->m[1][0] = 0.0;
+    out->m[1][1] = 2.0 / tb;
+    out->m[1][2] = 0.0;
+    out->m[1][3] = 0.0;
+
+    out->m[2][0] = 0.0;
+    out->m[2][1] = 0.0;
+    out->m[2][2] = -2.0 / fn;
+    out->m[2][3] = 0.0;
+
+    out->m[3][0] = -(right + left) / rl;
+    out->m[3][1] = -(top + bottom) / tb;
+    out->m[3][2] = -(far_plane + near_plane) / fn;
+    out->m[3][3] = 1.0;
+}
 
 #endif
 

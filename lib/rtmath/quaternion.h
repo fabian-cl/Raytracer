@@ -3,7 +3,7 @@
 
 #include "vec4_types.h"
 
-typedef union rtm_quaternion {
+typedef union rtm_quat {
     rtm_dvec4 v;
     double elems[4];
 };

@@ -107,34 +107,37 @@ typedef union rtm_fmat2 {
 } rtm_fmat2;
 
 // macro definition mxn dimension matrix
-#ifdef __cplusplus
-#define DEFINE_MAT_MxN_TYPE(NAME, TYPE, SIZE_M, SIZE_N)     \
-    typedef struct {                                        \
-        TYPE elem[SIZE_M*SIZE_N];                           \
-        inline TYPE &operator[](int index) { return elem[index]; } \
-        inline const TYPE &operator[](int index) const { return elem[index]; }\
-    } NAME;
-#else 
-#define DEFINE_MAT_TYPE(NAME, TYPE, SIZE_M, SIZE_N)     \
-    typedef struct {                                    \
-        TYPE elem[SIZE_M*SIZE_N];                       \
-    } NAME;
-#endif
 
-#ifdef __cplusplus
-#define DEFINE_MAT_TYPE(NAME, TYPE, SIZE)       \
-    typedef struct {                            \
-        TYPE elem[SIZE];                        \
-        inline TYPE &operator[](int index) { return elem[index]; } \
-        inline const TYPE &operator[](int index) const { return elem[index]; }\
-    } NAME;
-#else 
-#define DEFINE_MAT_TYPE(NAME, TYPE, SIZE)   \
-    typedef struct {                        \
-        TYPE elem[SIZE];                    \
-    } NAME;
+#ifndef DEFINE_MAT_MxN_TYPE
+    #ifdef __cplusplus
+    #define DEFINE_MAT_MxN_TYPE(NAME, TYPE, SIZE_M, SIZE_N)     \
+        typedef struct {                                        \
+            TYPE elem[SIZE_M*SIZE_N];                           \
+            inline TYPE &operator[](int index) { return elem[index]; } \
+            inline const TYPE &operator[](int index) const { return elem[index]; }\
+        } NAME;
+    #else
+    #define DEFINE_MAT_MxN_TYPE(NAME, TYPE, SIZE_M, SIZE_N)     \
+        typedef struct {                                    \
+            TYPE elem[SIZE_M*SIZE_N];                       \
+        } NAME;
+    #endif
 #endif
-
+#ifndef DEFINE_MAT_TYPE
+    #ifdef __cplusplus
+    #define DEFINE_MAT_TYPE(NAME, TYPE, SIZE)       \
+        typedef struct {                            \
+            TYPE elem[SIZE];                        \
+            inline TYPE &operator[](int index) { return elem[index]; } \
+            inline const TYPE &operator[](int index) const { return elem[index]; }\
+        } NAME;
+    #else 
+    #define DEFINE_MAT_TYPE(NAME, TYPE, SIZE)   \
+        typedef struct {                        \
+            TYPE elem[SIZE];                    \
+        } NAME;
+    #endif
+#endif
 
 #ifdef __cplusplus
 }

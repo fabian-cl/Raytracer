@@ -1,10 +1,13 @@
 {
     "files.associations": {
+        ".fantomasignore": "ignore",
         "vec_define.h": "c",
         "rtmdefine.h": "c",
         "vec2_double.h": "c",
         "vec3_types.h": "c",
         "vec2_types.h": "c",
-        "vec4_types.h": "c"
+        "vec4_types.h": "c",
+        "rtmath.h": "c",
+        "vec3_double.h": "c"
     }
 }
