@@ -8,6 +8,7 @@
         "vec2_types.h": "c",
         "vec4_types.h": "c",
         "rtmath.h": "c",
-        "vec3_double.h": "c"
+        "vec3_double.h": "c",
+        "math.h": "c"
     }
 }

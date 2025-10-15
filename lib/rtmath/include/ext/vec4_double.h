@@ -247,10 +247,7 @@ RTMDEF void rtm_dvec4_hadamard_to(rtm_dvec4* out, const rtm_dvec4* a, const rtm_
 // IMPLEMENTATION
 #ifdef RTM_IMPLEMENTATION
 
-#ifndef RT_MATH
-#define RT_MATH
 #include <math.h>
-#endif
 
 /*===========================================================
  * rtm_dvec4 Constructors

@@ -21,4 +21,5 @@ message(STATUS "Building projects...")
 
 # Add subdirectories (each one has its own CMakeLists.txt)
 #add_subdirectory(RaytracerCore)
+add_subdirectory(lib/rtmath)
 add_subdirectory(Tests)

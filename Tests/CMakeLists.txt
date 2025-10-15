@@ -2,54 +2,62 @@
 
 message(STATUS "Building Tests projects...")
 
+# ----------------------------------------------------------
+# Collect all test sources
+# ----------------------------------------------------------
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/rtm-test/*.c"
+    #"${CMAKE_CURRENT_SOURCE_DIR}/hello_world/*.c"
 )
 
-add_executable(Tests
-    ${TEST_SOURCES}
-)
+if(NOT TEST_SOURCES)
+    message(FATAL_ERROR "No source files found for Test!")
+endif()
 
-file(GLOB_RECURSE RTM_HEADERS CONFIGURE_DEPENDS
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/detail/*.h"
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/ext/*.h"
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/*.h"
-)
+#add_executable(Tests ${TEST_SOURCES} )
 
-file(GLOB_RECURSE TEST_UTILS CONFIGURE_DEPENDS
-    "${CMAKE_SOURCE_DIR}/utils/*.h"
-)
-
-file(GLOB_RECURSE RTM_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/rtmath.c" )
-
-add_library(RTM STATIC
-    ${RTM_SOURCES} ${RTM_HEADERS}
-)
-
-# Add Unity library
+# ----------------------------------------------------------
+# Add Unity (test framework)
+# ----------------------------------------------------------
 add_library(Unity STATIC
     "${CMAKE_SOURCE_DIR}/vendor/unity/src/unity.c"
 )
 
-target_include_directories(RTM PUBLIC
-    "${CMAKE_SOURCE_DIR}/lib/rtmath"
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/detail"
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/ext"
-)
+# ==========================================================
+# Build one executable per test file
+# ==========================================================
+foreach(TEST_FILE ${TEST_SOURCES})
+    get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
 
-#add_compile_definitions(USE_OWN_MAIN=1) # This project define its own main
+    message(STATUS "Building test ${TEST_NAME}...")
 
-target_link_libraries(Tests PRIVATE RTM Unity)
+    add_executable(${TEST_NAME} ${TEST_FILE})
+    # ----------------------------------------------------------
+    # Link everything together
+    # ----------------------------------------------------------
+    target_link_libraries(${TEST_NAME} PRIVATE RTM)
 
-# Include headers from rtm
-target_include_directories(Tests PRIVATE
-    "${CMAKE_SOURCE_DIR}/lib/rtmath"
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/detail"
-    "${CMAKE_SOURCE_DIR}/lib/rtmath/ext"
-    "${CMAKE_SOURCE_DIR}/vendor/unity/src"
-)
+    target_include_directories(${TEST_NAME} PUBLIC
+        "${CMAKE_SOURCE_DIR}/lib/rtmath/include"
+        "${CMAKE_SOURCE_DIR}/lib/rtmath/include/detail"
+        "${CMAKE_SOURCE_DIR}/lib/rtmath/include/ext"
+        "${CMAKE_SOURCE_DIR}/vendor/unity/src"
+    )
 
-set_target_properties(Tests PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
-    FOLDER "Applications"
-)
+    # ----------------------------------------------------------
+    # Output path and folder grouping
+    # ----------------------------------------------------------
+    set_target_properties(${TEST_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Tests
+        FOLDER "Tests"
+    )
+
+    # Register with CTest
+    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+endforeach()
+
+
+#set_target_properties(Tests PROPERTIES
+#    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+#    FOLDER "Applications"
+#)

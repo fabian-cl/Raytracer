@@ -1,5 +1,6 @@
 #include "../utils.h"
 
+//#define RTM_IMPLEMENTATION
 #include <rtmath.h>
 
 /*
@@ -142,16 +143,24 @@ static int test_dot_cross(void){
     return TEST_PASS;
 }
 */
+
+
+
 int main () {
     //RUN_TEST(test_construction);
     //RUN_TEST(test_add_sub_mult_div);
     rtm_dvec3 v = (rtm_dvec3) {0,0,1};
     rtm_dvec3 u = (rtm_dvec3) {2,0.4,-2};
-    printf("(%f,%f,%f)", v.x, v.y,v.z);
+    printf("(%f,%f,%f)\n", v.x, v.y,v.z);
 
     rtm_dvec3_add_inplace(&v, &u);
+    printf("(%f,%f,%f)\n", v.x, v.y,v.z);
 
-    printf("(%f,%f,%f)", v.x, v.y,v.z);
+    rtm_dvec3_mult_inplace(&v, 2);
+    printf("(%f,%f,%f)\n", v.x, v.y,v.z);
+
+    rtm_dvec3_div_inplace(&v, 3);
+    printf("(%f,%f,%f)\n", v.x, v.y,v.z);
 
     printf("\nAll rtm_dvec3 tests passed successfully!\n");
 

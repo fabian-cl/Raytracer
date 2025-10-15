@@ -260,10 +260,7 @@ RTMDEF void rtm_dmat4_ortho_to(rtm_dmat4* out,
 // IMPLEMENTATION
 #ifdef RTM_IMPLEMENTATION
 
-#ifndef RT_MATH
-#define RT_MATH
 #include <math.h>
-#endif
 
 #include <string.h>  // for memcpy
 
@@ -550,7 +547,7 @@ RTMDEF void rtm_dmat4_transpose_inplace(rtm_dmat4* m)
 /*-----------------------------------------------------------
  * Determinant (helper: 3x3 minor)
  *-----------------------------------------------------------*/
-RTMDEF _det3x3(double m[9])
+double _det3x3(double m[9])
 {
     return m[0]*(m[4]*m[8]-m[5]*m[7]) -
            m[1]*(m[3]*m[8]-m[5]*m[6]) +
@@ -570,7 +567,7 @@ RTMDEF double rtm_dmat4_determinant(const rtm_dmat4* m)
             for(int j=0;j<4;j++)
                 if(j != col)
                     minor[idx++] = m->elem[i*4 + j];
-        det += sign * m->elem[col] * det3x3(minor);
+        det += sign * m->elem[col] * _det3x3(minor);
         sign = -sign;
     }
     return det;
@@ -605,7 +602,7 @@ RTMDEF rtm_dmat4 rtm_dmat4_inverse(const rtm_dmat4* m)
                     minor[idx++] = m->elem[row*4 + col];
                 }
             }
-            inv.elem[i*4 + j] = ((i+j)%2==0 ? 1.0 : -1.0) * det3x3(minor) / det;
+            inv.elem[i*4 + j] = ((i+j)%2==0 ? 1.0 : -1.0) * _det3x3(minor) / det;
         }
     }
     return inv;
@@ -624,10 +621,11 @@ RTMDEF void rtm_dmat4_inverse_inplace(rtm_dmat4* m)
 
 RTMDEF rtm_dmat4 rtm_dmat4_translation(const rtm_dvec3* translation) {
     rtm_dmat4 m = {0};
-    m.elem[_rtm_dmat4(0,3)] = translation->elem[0];
-    m.elem[_rtm_dmat4(1,3)] = translation->elem[1];
-    m.elem[_rtm_dmat4(2,3)] = translation->elem[2];
-    m.elem[_rtm_dmat4(3,3)] = 1;
+
+    m.elem[_rtm_dmat4_index(0,3)] = translation->elem[0];
+    m.elem[_rtm_dmat4_index(1,3)] = translation->elem[1];
+    m.elem[_rtm_dmat4_index(2,3)] = translation->elem[2];
+    m.elem[_rtm_dmat4_index(3,3)] = 1;
 
     return m;
 }
@@ -639,10 +637,10 @@ RTMDEF void rtm_dmat4_translation_to(rtm_dmat4* out, const rtm_dvec3* translatio
 RTMDEF rtm_dmat4 rtm_dmat4_scale(const rtm_dvec3* scale) {
     rtm_dmat4 m = {0};
 
-    m.elem[_rtm_dmat4(0,0)] = scale->elem[0];
-    m.elem[_rtm_dmat4(1,1)] = scale->elem[1];
-    m.elem[_rtm_dmat4(2,2)] = scale->elem[2];
-    m.elem[_rtm_dmat4(3,3)] = 1;
+    m.elem[_rtm_dmat4_index(0,0)] = scale->elem[0];
+    m.elem[_rtm_dmat4_index(1,1)] = scale->elem[1];
+    m.elem[_rtm_dmat4_index(2,2)] = scale->elem[2];
+    m.elem[_rtm_dmat4_index(3,3)] = 1;
 
     return m;
 }

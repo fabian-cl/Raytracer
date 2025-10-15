@@ -135,10 +135,7 @@ RTMDEF rtm_ivec2 rtm_ivec2_hadamard(const rtm_ivec2* a, const rtm_ivec2* b);
  *===========================================================*/
 #ifdef RTM_IMPLEMENTATION
 
-#ifndef RT_MATH
-#define RT_MATH
 #include <math.h>
-#endif
 
 RTMDEF rtm_ivec2 rtm_ivec2_zero(void) { return VEC2_LITERAL_I(0, 0); }
 RTMDEF rtm_ivec2 rtm_ivec2_one(void) { return VEC2_LITERAL_I(1, 1); }

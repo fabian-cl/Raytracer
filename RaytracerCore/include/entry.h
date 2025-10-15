@@ -12,8 +12,7 @@ typedef enum APPLICATION_STATUS_CODE {
     APP_STATUS_COULD_NOT_INITIALIZE,
 } APPLICATION_STATUS_CODE;
 
-#ifdef USE_OWN_MAIN
-#if USE_OWN_MAIN == 0
+#if !defined (USE_OWN_MAIN)
 
 extern int create_application(application* out_app);
 
@@ -31,7 +30,6 @@ int main(void) {
     return 0;
 }
 
-#endif
 #else
 #pragma message("OWN MAIN")
 #endif

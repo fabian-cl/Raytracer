@@ -82,10 +82,8 @@ RTMDEF rtm_dvec3 rtm_dvec3_reflect(const rtm_dvec3* v, const rtm_dvec3* n);
 // IMPLEMENTATION
 #ifdef RTM_IMPLEMENTATION
 
-#ifndef RT_MATH
-#define RT_MATH
 #include <math.h>
-#endif
+
 
 // CONSTRUCTION
 RTMDEF rtm_dvec3 rtm_dvec3_zero(void) { return (rtm_dvec3) { 0 }; }

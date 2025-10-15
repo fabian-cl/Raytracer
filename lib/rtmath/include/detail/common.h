@@ -3,10 +3,10 @@
 #define RTM_COMMON_H
 
 #ifndef RTMDEF
-    #if (RTM_USE_STATIC_INLINE)
-        #define RTMDEF RTMDEF
+    #ifdef RTM_USE_STATIC_INLINE
+        #define RTMDEF static inline
     #else
-        #define RTMDEF static
+        #define RTMDEF extern
     #endif
 #endif
 
